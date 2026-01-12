@@ -1,0 +1,2292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalana Travels - Sri Lanka Tourism</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0066cc;
+            --primary-dark: #004a99;
+            --accent: #ff6b35;
+            --accent-light: #ffb84d;
+            --bg: #fafafa;
+            --bg-dark: #0f0f1e;
+            --text: #1a1a1a;
+            --text-light: #666;
+            --text-light-dark: #aaa;
+            --border: #e0e0e0;
+            --border-dark: #333;
+            --surface: #ffffff;
+            --surface-dark: #1a1a2e;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            --shadow-dark: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text);
+            background: var(--bg);
+            transition: background 0.3s ease, color 0.3s ease;
+            line-height: 1.6;
+        }
+
+        body.dark-mode {
+            background: var(--bg-dark);
+            color: var(--text-light-dark);
+        }
+
+        body.dark-mode .card,
+        body.dark-mode .modal-content,
+        body.dark-mode .navbar,
+        body.dark-mode .package-card {
+            background: var(--surface-dark);
+            color: var(--text-light-dark);
+        }
+
+        body.dark-mode .navbar {
+            border-bottom: 1px solid var(--border-dark);
+        }
+
+        body.dark-mode input,
+        body.dark-mode select,
+        body.dark-mode textarea {
+            background: var(--surface-dark);
+            color: var(--text-light-dark);
+            border: 1px solid var(--border-dark);
+        }
+
+        /* Navbar */
+        .navbar {
+            position: sticky;
+            top: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: var(--surface);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow);
+            z-index: 100;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .navbar.scrolled {
+            padding: 0.8rem 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        body.dark-mode .nav-links a {
+            color: var(--text-light-dark);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .cta-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 0.8rem 1.8rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4);
+        }
+
+        .cta-btn:active {
+            transform: translateY(0);
+        }
+
+        .dark-toggle {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .dark-toggle:hover {
+            transform: rotate(20deg);
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-slider {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .hero-slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1.2s ease-in-out;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .hero-slide.active {
+            opacity: 1;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(0, 102, 204, 0.2));
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            color: white;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-content h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-content p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+            font-weight: 300;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), #ff8c5a);
+            color: white;
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+        }
+
+        /* Floating shapes */
+        .floating-shape {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Trip Planner */
+        .trip-planner {
+            background: var(--surface);
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .section-subtitle {
+            color: var(--text-light);
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+        }
+
+        body.dark-mode .section-subtitle {
+            color: var(--text-light-dark);
+        }
+
+        .planner-form {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: var(--text);
+            text-align: left;
+        }
+
+        body.dark-mode .form-group label {
+            color: var(--text-light-dark);
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 0.8rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            transition: border 0.3s, box-shadow 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        .planner-results {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .result-empty {
+            grid-column: 1 / -1;
+            padding: 2rem;
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        /* Card component */
+        .card {
+            background: var(--surface);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid var(--border);
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 102, 204, 0.2);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .card-rating {
+            display: flex;
+            gap: 0.3rem;
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+        }
+
+        .star {
+            color: #ffc107;
+        }
+
+        .card-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .tag {
+            background: var(--accent);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .card-text {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        body.dark-mode .card-text {
+            color: var(--text-light-dark);
+        }
+
+        .card-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .view-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .view-btn:hover {
+            background: var(--primary-dark);
+            transform: scale(1.02);
+        }
+
+        /* Destinations section */
+        .destinations {
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+        }
+
+        body.dark-mode .destinations {
+            background: var(--bg-dark);
+        }
+
+        .destinations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Packages section */
+        .packages {
+            padding: 4rem 2rem;
+            background: var(--surface);
+        }
+
+        .packages-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .price-toggle {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .toggle-btn {
+            padding: 0.8rem 1.5rem;
+            border: 2px solid var(--border);
+            background: transparent;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .toggle-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .package-card {
+            background: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s;
+            overflow: hidden;
+        }
+
+        .package-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent);
+            box-shadow: 0 15px 40px rgba(255, 107, 53, 0.2);
+        }
+
+        .package-card.featured {
+            border-color: var(--accent);
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.15);
+        }
+
+        .package-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: var(--accent);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            font-weight: 700;
+            transform: rotate(45deg);
+            width: 120px;
+            text-align: center;
+            font-size: 0.75rem;
+        }
+
+        .package-tier {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .package-description {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        body.dark-mode .package-description {
+            color: var(--text-light-dark);
+        }
+
+        .package-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .package-features {
+            text-align: left;
+            margin-bottom: 2rem;
+            padding: 1.5rem 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .feature {
+            padding: 0.5rem 0;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        body.dark-mode .feature {
+            color: var(--text-light-dark);
+        }
+
+        .feature::before {
+            content: '✓';
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .book-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .book-btn:hover {
+            background: #ff5a1f;
+            transform: scale(1.02);
+        }
+
+        /* Hotels section */
+        .hotels {
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+        }
+
+        body.dark-mode .hotels {
+            background: var(--bg-dark);
+        }
+
+        .hotels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Services section */
+        .services {
+            padding: 4rem 2rem;
+            background: var(--surface);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .service-card {
+            text-align: center;
+            padding: 2rem;
+            border-radius: 12px;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .service-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-5px);
+        }
+
+        .service-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .service-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .service-card p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        body.dark-mode .service-card p {
+            color: var(--text-light-dark);
+        }
+
+        /* Blog/Tips section */
+        .blog {
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+        }
+
+        body.dark-mode .blog {
+            background: var(--bg-dark);
+        }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .blog-card {
+            background: var(--surface);
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        body.dark-mode .blog-card {
+            background: var(--surface-dark);
+            border: 1px solid var(--border-dark);
+        }
+
+        .blog-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 102, 204, 0.2);
+        }
+
+        .blog-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .blog-content {
+            padding: 1.5rem;
+        }
+
+        .blog-category {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .blog-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .blog-excerpt {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        body.dark-mode .blog-excerpt {
+            color: var(--text-light-dark);
+        }
+
+        /* Reviews/Testimonials */
+        .reviews {
+            padding: 4rem 2rem;
+            background: var(--surface);
+        }
+
+        .reviews-slider {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .review-card {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .review-stars {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .review-text {
+            font-size: 1.05rem;
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+
+        .review-author {
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .review-location {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .review-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .slider-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .slider-btn:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        .add-review-form {
+            background: var(--accent);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 600px;
+            margin: 2rem auto;
+        }
+
+        .form-group-review {
+            margin-bottom: 1rem;
+        }
+
+        .form-group-review label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-group-review input,
+        .form-group-review textarea,
+        .form-group-review select {
+            width: 100%;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-group-review textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .submit-review-btn {
+            width: 100%;
+            background: white;
+            color: var(--accent);
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .submit-review-btn:hover {
+            transform: scale(1.02);
+        }
+
+        /* FAQ */
+        .faq {
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+        }
+
+        body.dark-mode .faq {
+            background: var(--bg-dark);
+        }
+
+        .faq-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        body.dark-mode .faq-item {
+            background: var(--surface-dark);
+            border: 2px solid var(--border-dark);
+        }
+
+        .faq-item.active {
+            border-color: var(--accent);
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.2);
+        }
+
+        .faq-question {
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            user-select: none;
+        }
+
+        .faq-question:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .faq-toggle {
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .faq-item.active .faq-toggle {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            padding: 0 1.5rem;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 300px;
+            padding: 0 1.5rem 1.5rem 1.5rem;
+        }
+
+        .faq-answer-text {
+            color: var(--text-light);
+            font-weight: 400;
+        }
+
+        body.dark-mode .faq-answer-text {
+            color: var(--text-light-dark);
+        }
+
+        /* Contact section */
+        .contact {
+            padding: 4rem 2rem;
+            background: var(--surface);
+        }
+
+        .contact-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group-contact {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group-contact label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group-contact input,
+        .form-group-contact textarea {
+            padding: 0.8rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .form-group-contact input:focus,
+        .form-group-contact textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        .form-group-contact textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .submit-contact-btn {
+            padding: 1rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .submit-contact-btn:hover {
+            background: #ff5a1f;
+            transform: scale(1.02);
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .info-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-box h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .info-box p {
+            font-size: 0.95rem;
+            opacity: 0.95;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--text);
+            color: white;
+            padding: 3rem 2rem 1rem;
+            text-align: center;
+        }
+
+        body.dark-mode .footer {
+            background: var(--surface-dark);
+            color: var(--text-light-dark);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .footer-section h4 {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        body.dark-mode .footer-section a {
+            color: var(--text-light-dark);
+        }
+
+        .footer-section a:hover {
+            color: var(--accent);
+        }
+
+        .newsletter-input {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .newsletter-input input {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 8px;
+        }
+
+        .newsletter-input button {
+            padding: 0.8rem 1.5rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .newsletter-input button:hover {
+            background: #ff5a1f;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            background: var(--accent);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 700px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease-out;
+            position: relative;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--text);
+        }
+
+        body.dark-mode .modal-close {
+            color: var(--text-light-dark);
+        }
+
+        .modal-title {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .modal-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-section h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+        }
+
+        .modal-section p {
+            color: var(--text-light);
+            line-height: 1.8;
+        }
+
+        body.dark-mode .modal-section p {
+            color: var(--text-light-dark);
+        }
+
+        .activities-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .activities-list li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .activities-list li::before {
+            content: '▪';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--accent);
+            color: white;
+            padding: 1.5rem 2rem;
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            animation: slideInRight 0.3s ease-out;
+            z-index: 2000;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .toast.error {
+            background: #d32f2f;
+        }
+
+        .toast.success {
+            background: #388e3c;
+        }
+
+        /* Back to top */
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+            z-index: 999;
+        }
+
+        .back-to-top.show {
+            display: flex;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            .hero-content p {
+                font-size: 1rem;
+            }
+
+            .planner-form {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-container {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .package-card {
+                padding: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar" id="navbar">
+    <div class="logo">🌴 Kalana Travels</div>
+    <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#destinations">Destinations</a></li>
+        <li><a href="#packages">Packages</a></li>
+        <li><a href="#hotels">Hotels</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#blog">Blog</a></li>
+        <li><a href="#reviews">Reviews</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div style="display: flex; gap: 1rem; align-items: center;">
+        <button class="dark-toggle" id="darkToggle">🌙</button>
+        <button class="cta-btn" onclick="scrollToBooking()">Book Now</button>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero" id="home">
+    <div class="hero-slider">
+        <div class="hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1596073281198-cdac3ba59765?w=1200&h=800&fit=crop')"></div>
+        <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1537225228614-b4fad34a0b60?w=1200&h=800&fit=crop')"></div>
+        <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1200&h=800&fit=crop')"></div>
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <h1>Discover the Beauty of Sri Lanka</h1>
+        <p>Beaches, Mountains, Wildlife, Culture & Unforgettable Memories</p>
+        <div class="hero-buttons">
+            <button class="btn btn-primary" onclick="scrollToDestinations()">Explore Destinations</button>
+            <button class="btn btn-secondary" onclick="scrollToBooking()">Plan My Trip</button>
+        </div>
+    </div>
+</section>
+
+<!-- Trip Planner -->
+<section class="trip-planner" id="planner">
+    <h2 class="section-title">Plan Your Perfect Trip</h2>
+    <p class="section-subtitle">Filter destinations by your preferences and budget</p>
+    <div class="planner-form">
+        <div class="form-group">
+            <label for="destination">Destination</label>
+            <select id="destination">
+                <option value="">All Destinations</option>
+                <option value="sigiriya">Sigiriya</option>
+                <option value="ella">Ella</option>
+                <option value="galle">Galle</option>
+                <option value="kandy">Kandy</option>
+                <option value="mirissa">Mirissa</option>
+                <option value="nuwara-eliya">Nuwara Eliya</option>
+                <option value="yala">Yala</option>
+                <option value="trincomalee">Trincomalee</option>
+                <option value="anuradhapura">Anuradhapura</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="budget">Budget (USD)</label>
+            <input type="range" id="budget" min="0" max="5000" value="3000">
+            <span id="budgetDisplay">$3000</span>
+        </div>
+        <div class="form-group">
+            <label for="travelers">Travelers</label>
+            <input type="number" id="travelers" min="1" max="20" value="1">
+        </div>
+        <div class="form-group">
+            <label for="travelType">Travel Type</label>
+            <select id="travelType">
+                <option value="">All Types</option>
+                <option value="beach">Beach</option>
+                <option value="nature">Nature</option>
+                <option value="culture">Culture</option>
+                <option value="adventure">Adventure</option>
+                <option value="luxury">Luxury</option>
+                <option value="budget">Budget</option>
+            </select>
+        </div>
+    </div>
+    <div class="planner-results" id="plannerResults"></div>
+</section>
+
+<!-- Destinations -->
+<section class="destinations" id="destinations">
+    <h2 class="section-title">Explore Sri Lanka Destinations</h2>
+    <p class="section-subtitle">From pristine beaches to ancient temples</p>
+    <div class="destinations-grid" id="destinationsGrid"></div>
+</section>
+
+<!-- Packages -->
+<section class="packages" id="packages">
+    <div class="packages-header">
+        <h2 class="section-title">Travel Packages</h2>
+        <p class="section-subtitle">Choose the perfect package for your journey</p>
+        <div class="price-toggle">
+            <button class="toggle-btn active" data-toggle="per-person">Per Person</button>
+            <button class="toggle-btn" data-toggle="per-group">Per Group</button>
+        </div>
+    </div>
+    <div class="packages-grid" id="packagesGrid"></div>
+</section>
+
+<!-- Hotels -->
+<section class="hotels" id="hotels">
+    <h2 class="section-title">Partner Hotels</h2>
+    <p class="section-subtitle">Premium accommodations across Sri Lanka</p>
+    <div class="hotels-grid" id="hotelsGrid"></div>
+</section>
+
+<!-- Services -->
+<section class="services" id="services">
+    <h2 class="section-title">Our Services</h2>
+    <p class="section-subtitle">Everything you need for a seamless travel experience</p>
+    <div class="services-grid">
+        <div class="service-card">
+            <div class="service-icon">📄</div>
+            <h3>Visa Assistance</h3>
+            <p>Expert guidance for visa applications and documentation</p>
+        </div>
+        <div class="service-card">
+            <div class="service-icon">🚗</div>
+            <h3>Airport Pickup</h3>
+            <p>Comfortable and reliable airport transfer services</p>
+        </div>
+        <div class="service-card">
+            <div class="service-icon">🗺️</div>
+            <h3>Custom Tours</h3>
+            <p>Tailored itineraries designed for your preferences</p>
+        </div>
+        <div class="service-card">
+            <div class="service-icon">👨‍🏫</div>
+            <h3>Tour Guides</h3>
+            <p>Professional guides fluent in multiple languages</p>
+        </div>
+        <div class="service-card">
+            <div class="service-icon">🚙</div>
+            <h3>Vehicle Rental</h3>
+            <p>Wide range of vehicles for independent travel</p>
+        </div>
+        <div class="service-card">
+            <div class="service-icon">🛡️</div>
+            <h3>Travel Insurance</h3>
+            <p>Comprehensive coverage for peace of mind</p>
+        </div>
+    </div>
+</section>
+
+<!-- Blog/Tips -->
+<section class="blog" id="blog">
+    <h2 class="section-title">Travel Tips & Blog</h2>
+    <p class="section-subtitle">Learn from our experts and experienced travelers</p>
+    <div class="blog-grid" id="blogGrid"></div>
+</section>
+
+<!-- Reviews -->
+<section class="reviews" id="reviews">
+    <h2 class="section-title">Traveler Reviews</h2>
+    <p class="section-subtitle">What our guests say about their experience</p>
+    <div class="review-controls">
+        <button class="slider-btn" onclick="previousReview()">← Previous</button>
+        <button class="slider-btn" onclick="nextReview()">Next →</button>
+    </div>
+    <div class="reviews-slider" id="reviewsSlider"></div>
+    <div class="add-review-form">
+        <h3>Share Your Experience</h3>
+        <form id="reviewForm" onsubmit="submitReview(event)">
+            <div class="form-group-review">
+                <label>Your Name</label>
+                <input type="text" id="reviewName" required>
+            </div>
+            <div class="form-group-review">
+                <label>Rating (1-5)</label>
+                <select id="reviewRating" required>
+                    <option value="">Select rating</option>
+                    <option value="5">⭐ Excellent (5)</option>
+                    <option value="4">⭐ Good (4)</option>
+                    <option value="3">⭐ Average (3)</option>
+                    <option value="2">⭐ Fair (2)</option>
+                    <option value="1">⭐ Poor (1)</option>
+                </select>
+            </div>
+            <div class="form-group-review">
+                <label>Your Review</label>
+                <textarea id="reviewText" required></textarea>
+            </div>
+            <button type="submit" class="submit-review-btn">Submit Review</button>
+        </form>
+    </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+    <h2 class="section-title">Frequently Asked Questions</h2>
+    <p class="section-subtitle">Answers to common travel questions</p>
+    <div class="faq-container" id="faqContainer"></div>
+</section>
+
+<!-- Contact -->
+<section class="contact" id="contact">
+    <h2 class="section-title">Get In Touch</h2>
+    <p class="section-subtitle">We're here to help plan your dream trip</p>
+    <div class="contact-container">
+        <form class="contact-form" onsubmit="submitContact(event)">
+            <div class="form-group-contact">
+                <label>Full Name</label>
+                <input type="text" required>
+            </div>
+            <div class="form-group-contact">
+                <label>Email</label>
+                <input type="email" required>
+            </div>
+            <div class="form-group-contact">
+                <label>Message</label>
+                <textarea required></textarea>
+            </div>
+            <button type="submit" class="submit-contact-btn">Send Message</button>
+        </form>
+        <div class="contact-info">
+            <div class="info-box">
+                <div class="info-icon">📱</div>
+                <h3>WhatsApp</h3>
+                <p>+94 771 234 567</p>
+            </div>
+            <div class="info-box">
+                <div class="info-icon">📧</div>
+                <h3>Email</h3>
+                <p>info@kalanattravels.com</p>
+            </div>
+            <div class="info-box">
+                <div class="info-icon">📞</div>
+                <h3>Call Us</h3>
+                <p>+94 11 234 5678</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h4>About Kalana</h4>
+            <p>Your trusted partner for authentic Sri Lanka tourism experiences. We craft unforgettable journeys tailored to your dreams.</p>
+        </div>
+        <div class="footer-section">
+            <h4>Quick Links</h4>
+            <ul>
+                <li><a href="#destinations">Destinations</a></li>
+                <li><a href="#packages">Packages</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#blog">Blog</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4>Newsletter</h4>
+            <p>Get travel tips and exclusive offers</p>
+            <div class="newsletter-input">
+                <input type="email" placeholder="Your email">
+                <button>Subscribe</button>
+            </div>
+        </div>
+        <div class="footer-section">
+            <h4>Follow Us</h4>
+            <div class="social-links">
+                <a href="#">f</a>
+                <a href="#">𝕏</a>
+                <a href="#">📷</a>
+                <a href="#">▶</a>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2024 Kalana Travels. All rights reserved. | Discover Sri Lanka's Magic</p>
+    </div>
+</footer>
+
+<!-- Modals -->
+<div class="modal" id="destinationModal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('destinationModal')">+</button>
+        <h2 class="modal-title" id="modalTitle"></h2>
+        <div id="modalBody"></div>
+    </div>
+</div>
+
+<div class="modal" id="bookingModal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('bookingModal')">+</button>
+        <h2 class="modal-title">Book Your Package</h2>
+        <form onsubmit="submitBooking(event)">
+            <div class="modal-section">
+                <label for="bookingName">Full Name</label>
+                <input type="text" id="bookingName" required style="padding: 0.8rem; border: 2px solid var(--border); border-radius: 8px; width: 100%; margin: 0.5rem 0;">
+            </div>
+            <div class="modal-section">
+                <label for="bookingEmail">Email</label>
+                <input type="email" id="bookingEmail" required style="padding: 0.8rem; border: 2px solid var(--border); border-radius: 8px; width: 100%; margin: 0.5rem 0;">
+            </div>
+            <div class="modal-section">
+                <label for="bookingDates">Travel Dates</label>
+                <input type="date" id="bookingDates" required style="padding: 0.8rem; border: 2px solid var(--border); border-radius: 8px; width: 100%; margin: 0.5rem 0;">
+            </div>
+            <button type="submit" class="book-btn">Confirm Booking</button>
+        </form>
+    </div>
+</div>
+
+<div class="modal" id="articleModal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('articleModal')">+</button>
+        <h2 class="modal-title" id="articleTitle"></h2>
+        <img id="articleImage" style="width: 100%; border-radius: 8px; margin: 1rem 0;">
+        <div id="articleContent"></div>
+    </div>
+</div>
+
+<!-- Back to Top -->
+<button class="back-to-top" id="backToTop" onclick="backToTop()">↑</button>
+
+<script>
+    // Data
+    const destinations = [
+        {
+            id: 'sigiriya',
+            name: 'Sigiriya',
+            rating: 5,
+            tags: ['Cultural', 'Adventure'],
+            description: 'Ancient rock fortress with breathtaking 360-degree views',
+            price: 45,
+            image: 'https://images.unsplash.com/photo-1587062990751-e8f6f16edf18?w=400&h=300&fit=crop',
+            details: {
+                bestTime: 'December - March',
+                activities: ['Rock climbing', 'Photography', 'Sunrise viewing', 'Archaeological tours'],
+                itinerary: '1-2 days\nDay 1: Arrive and climb Sigiriya Rock\nDay 2: Visit nearby Buddhist caves and temples',
+                budget: '$200-400'
+            }
+        },
+        {
+            id: 'ella',
+            name: 'Ella',
+            rating: 5,
+            tags: ['Nature', 'Adventure'],
+            description: 'Scenic hill country town with tea plantations and hiking',
+            price: 35,
+            image: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&h=300&fit=crop',
+            details: {
+                bestTime: 'December - April',
+                activities: ['Tea plantation tours', 'Waterfall hiking', 'Train rides', 'Café culture'],
+                itinerary: '2-3 days\nDay 1: Arrive and explore local cafés\nDay 2: Hike Nine Arch Bridge and Rawana Falls\nDay 3: Tea plantation tours',
+                budget: '$150-300'
+            }
+        },
+        {
+            id: 'galle',
+            name: 'Galle',
+            rating: 4.5,
+            tags: ['Beach', 'Cultural'],
+            description: 'Historic Dutch fort with golden beaches and seafood',
+            price: 40,
+            image: 'https://images.unsplash.com/photo-1542401886-65d27afda266?w=400&h=300&fit=crop',
+            details: {
+                bestTime: 'October - April',
+                activities: ['Fort exploration', 'Beach relaxation', 'Whale watching', 'Sunset walks'],
+                itinerary: '2 days\nDay 1: Explore Galle Fort and beaches\nDay 2: Whale watching cruise',
+                budget: '$180-350'
+            }
+        },
+        {
+            id: 'kandy',
+            name: 'Kandy',
+            rating: 5,
+            tags: ['Cultural', 'Nature'],
+            description: 'Sacred Buddhist city with ancient temples and gardens',
+            price: 50,
+            image: 'https://images.unsplash.com/photo-1597377866396-6e565fe93aba?w=400&h=300&fit=crop',
+            details: {
+                bestTime: 'December - March',
+                activities: ['Temple visits', 'Lake walks', 'Botanical gardens', 'Cultural festivals'],
+                itinerary: '2 days\nDay 1: Visit Temple of the Tooth and Peradeniya Gardens\nDay 2: Lake walks and local markets',
+                budget: '$150-300'
+            }
+        },
+        {
+            id: 'mirissa',
+            name: 'Mirissa',
+            rating: 4.5,
+            tags: ['Beach', 'Adventure'],
+            description: 'Stunning beach paradise with whale watching and surf',
+            price: 38,
+            image: 'https://images.unsplash.com/photo-1596073281198-cdac3ba59765?w=400&h=300&fit=crop',
+            details: {
+                bestTime: 'November - May',
+                activities: ['Whale watching', 'Surfing', 'Beach relaxation', 'Turtle sanctuary'],
+                itinerary: '3 days\nDay 1-3: Beach activities, whale watching, water sports',
+                budget: '$200-400'
+            }
+        },
+        {
+            id: 'nuwara-eliya',
+            name: 'Nuwara Eliya',
+            rating: 4,
+            tags: ['Nature', 'Adventure'],
+            description: 'Cool mountain town with golf, hiking and scenic views',
+            price: 42,
+            image: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&h=300&fit=crop',
+            details: {
+                bestTime: 'December - March',
+                activities: ['Hiking', 'Horton Plains', 'Golf', 'Lake activities'],
+                itinerary: '2 days\nDay 1: Golf and lake walks\nDay 2: Horton Plains trek',
+                budget: '$180-350'
+            }
+        },
+        {
+            id: 'yala',
+            name: 'Yala National Park',
+            rating: 4.5,
+            tags: ['Nature', 'Adventure'],
+            description: 'Premier wildlife safari destination with leopards and elephants',
+            price: 55,
+            image: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=400&h=300&fit=crop',
+            details: {
+                bestTime: 'January - June',
+                activities: ['Safari drives', 'Wildlife photography', 'Birdwatching', 'Nature walks'],
+                itinerary: '2 days\nDay 1: Early morning and evening safari drives\nDay 2: More safari and wildlife exploration',
+                budget: '$300-500'
+            }
+        },
+        {
+            id: 'trincomalee',
+            name: 'Trincomalee',
+            rating: 4,
+            tags: ['Beach', 'Adventure'],
+            description: 'Pristine northern beach with diving and water sports',
+            price: 36,
+            image: 'https://images.unsplash.com/photo-1537225228614-b4fad34a0b60?w=400&h=300&fit=crop',
+            details: {
+                bestTime: 'April - September',
+                activities: ['Diving', 'Snorkeling', 'Island tours', 'Fort visits'],
+                itinerary: '3 days\nDay 1-3: Beach relaxation, water sports, island hopping',
+                budget: '$200-350'
+            }
+        },
+        {
+            id: 'anuradhapura',
+            name: 'Anuradhapura',
+            rating: 4.5,
+            tags: ['Cultural', 'Adventure'],
+            description: 'Ancient Buddhist city with sacred temples and ruins',
+            price: 48,
+            image: 'https://images.unsplash.com/photo-1587340180536-643a42b4b542?w=400&h=300&fit=crop',
+            details: {
+                bestTime: 'December - March',
+                activities: ['Temple tours', 'Archaeological exploration', 'Meditation', 'Local culture'],
+                itinerary: '1-2 days\nDay 1: Temple and monastery tours\nDay 2: Sacred sites and archaeological sites',
+                budget: '$150-300'
+            }
+        }
+    ];
+
+    const packages = [
+        {
+            tier: 'Budget',
+            description: '5-day Sri Lanka introduction',
+            pricePerPerson: 450,
+            pricePerGroup: 1800,
+            features: ['3-star hotels', 'Daily breakfast', 'Private transport', 'Professional guide', 'Airport transfer']
+        },
+        {
+            tier: 'Standard',
+            description: '7-day complete Sri Lanka tour',
+            pricePerPerson: 750,
+            pricePerGroup: 3000,
+            features: ['4-star hotels', 'All meals included', 'Private AC vehicle', 'English-speaking guide', 'All entrance fees'],
+            featured: true
+        },
+        {
+            tier: 'Luxury',
+            description: '10-day premium experience',
+            pricePerPerson: 1200,
+            pricePerGroup: 4800,
+            features: ['5-star resorts', 'Fine dining', 'Personal driver', 'Expert local guide', 'Spa & wellness', 'Private tours']
+        }
+    ];
+
+    const hotels = [
+        { name: 'Cinnamon Lakeside Kandy', city: 'Kandy', rating: 4.5, price: 120, image: 'https://images.unsplash.com/photo-1566156392147-c627a92c6100?w=400&h=300&fit=crop' },
+        { name: 'Beachcomber Mirissa', city: 'Mirissa', rating: 4.3, price: 95, image: 'https://images.unsplash.com/photo-1519046904884-53103b34b206?w=400&h=300&fit=crop' },
+        { name: 'Tea Trails Ella', city: 'Ella', rating: 4.7, price: 110, image: 'https://images.unsplash.com/photo-1551910857-642ac9fd0c88?w=400&h=300&fit=crop' },
+        { name: 'Fort Promenade Galle', city: 'Galle', rating: 4.4, price: 130, image: 'https://images.unsplash.com/photo-1595576142684-7d16ce2b52a1?w=400&h=300&fit=crop' },
+        { name: 'Sigiriya Village Hotel', city: 'Sigiriya', rating: 4.2, price: 85, image: 'https://images.unsplash.com/photo-1618886996816-6fb4e67fe25e?w=400&h=300&fit=crop' },
+        { name: 'Trinco Blu Resort', city: 'Trincomalee', rating: 4.1, price: 105, image: 'https://images.unsplash.com/photo-1582719471384-894fbb16e074?w=400&h=300&fit=crop' }
+    ];
+
+    const blogs = [
+        {
+            title: 'Top 5 Must-Do Activities in Sri Lanka',
+            category: 'Travel Tips',
+            image: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&h=300&fit=crop',
+            content: '1. Climb Sigiriya Rock\n2. Take the mountain train to Ella\n3. Safari in Yala National Park\n4. Explore Galle Fort\n5. Relax at Mirissa Beach\n\nThese iconic experiences showcase Sri Lanka\'s diverse landscapes and rich heritage.'
+        },
+        {
+            title: 'Best Time to Visit Sri Lanka',
+            category: 'Best Seasons',
+            image: 'https://images.unsplash.com/photo-1596073281198-cdac3ba59765?w=400&h=300&fit=crop',
+            content: 'December to March is ideal for the western and southern coasts. May to September is perfect for the north and east. The country offers year-round tourism with different regions having their best seasons. Plan accordingly for optimal weather.'
+        },
+        {
+            title: 'Sri Lankan Cuisine: A Culinary Journey',
+            category: 'Food & Culture',
+            image: 'https://images.unsplash.com/photo-1604521209999-b1628a56c0c8?w=400&h=300&fit=crop',
+            content: 'From spicy curries to fresh seafood, Sri Lankan food is a blend of flavors. Try kottu roti, lamprais, and deviled dishes. Street food is abundant and affordable. Don\'t miss local tea and tropical fruits.'
+        },
+        {
+            title: 'Budget Travel Tips for Sri Lanka',
+            category: 'Budget Travel',
+            image: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&h=300&fit=crop',
+            content: 'Stay in guesthouses, eat at local restaurants, use public transport, and book tours in advance. Daily budget of $30-50 per person is reasonable. Book packages for better deals on multi-day tours.'
+        },
+        {
+            title: 'Safety Guide for Travelers',
+            category: 'Safety',
+            image: 'https://images.unsplash.com/photo-1464207687429-7505649dae38?w=400&h=300&fit=crop',
+            content: 'Sri Lanka is generally safe for travelers. Avoid late-night travel, keep valuables secure, and stay aware of surroundings. Use registered taxis or pre-arranged transport. Check local advisories before travel.'
+        },
+        {
+            title: 'Hidden Gems Off the Beaten Path',
+            category: 'Travel Tips',
+            image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
+            content: 'Explore Arugam Bay, Jaffna Peninsula, Polonnaruwa, and lesser-known mountain trails. These destinations offer authentic experiences away from tourist crowds. Perfect for adventurous travelers.'
+        }
+    ];
+
+    const reviews = [
+        {
+            text: 'Kalana Travels made our honeymoon unforgettable! Every detail was perfectly planned.',
+            author: 'Sarah & John',
+            location: 'London, UK',
+            rating: 5
+        },
+        {
+            text: 'Best value for money tour package. Professional guides and great accommodations.',
+            author: 'Maria Silva',
+            location: 'São Paulo, Brazil',
+            rating: 5
+        },
+        {
+            text: 'The wildlife safari was incredible! Saw leopards and elephants in Yala.',
+            author: 'Ahmed Hassan',
+            location: 'Dubai, UAE',
+            rating: 5
+        },
+        {
+            text: 'Excellent service and personalized attention. Will definitely come back!',
+            author: 'Priya Kumar',
+            location: 'Mumbai, India',
+            rating: 4
+        }
+    ];
+
+    const faqs = [
+        {
+            question: 'What is the best time to visit Sri Lanka?',
+            answer: 'December to March for the west/south coasts, May to September for the north/east. The island offers year-round tourism with different regions having their peak seasons.'
+        },
+        {
+            question: 'How much does a Sri Lanka tour cost?',
+            answer: 'Budget tours start from $45/day, standard packages from $750 for 7 days, and luxury tours from $1200 for 10 days. Costs vary based on accommodation, meals, and activities.'
+        },
+        {
+            question: 'Do I need a visa to visit Sri Lanka?',
+            answer: 'Most countries require a visa. We offer visa assistance services. Online ETA (Electronic Travel Authorization) is available for many nationalities and costs around $30-40.'
+        },
+        {
+            question: 'Can I customize my tour itinerary?',
+            answer: 'Yes! We specialize in custom tours tailored to your preferences, budget, and interests. Contact us to discuss your specific requirements.'
+        },
+        {
+            question: 'Is Sri Lanka safe for tourists?',
+            answer: 'Sri Lanka is generally safe. Use registered taxis, avoid late-night travel, and keep valuables secure. We recommend travel insurance for peace of mind.'
+        },
+        {
+            question: 'What should I pack for Sri Lanka?',
+            answer: 'Pack light clothing, sunscreen, insect repellent, comfortable shoes, and rain gear. For hill country, bring a light jacket. Respectful clothing for temples is appreciated.'
+        }
+    ];
+
+    let currentReviewIndex = 0;
+    let currentPriceMode = 'per-person';
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        renderDestinations();
+        renderPlanner();
+        renderPackages();
+        renderHotels();
+        renderBlogs();
+        renderReviews();
+        renderFAQs();
+        setupEventListeners();
+        loadDarkMode();
+        loadReviews();
+        heroSlider();
+    });
+
+    function renderDestinations() {
+        const grid = document.getElementById('destinationsGrid');
+        grid.innerHTML = destinations.map(d => `
+            <div class="card">
+                <img src="${d.image}" alt="${d.name}" class="card-image">
+                <div class="card-body">
+                    <h3 class="card-title">${d.name}</h3>
+                    <div class="card-rating">${'★'.repeat(d.rating)}${'☆'.repeat(5-d.rating)} (${d.rating})</div>
+                    <div class="card-tags">${d.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+                    <p class="card-text">${d.description}</p>
+                    <p class="card-price">From $${d.price}/day</p>
+                    <button class="view-btn" onclick="openDestinationModal('${d.id}')">View Details</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function renderPlanner() {
+        updatePlannerResults();
+    }
+
+    function updatePlannerResults() {
+        const dest = document.getElementById('destination').value;
+        const budget = parseInt(document.getElementById('budget').value);
+        const type = document.getElementById('travelType').value;
+
+        let filtered = destinations.filter(d => {
+            const matchDest = !dest || d.id === dest;
+            const matchBudget = d.price <= budget;
+            const matchType = !type || d.tags.some(t => t.toLowerCase() === type.toLowerCase());
+            return matchDest && matchBudget && matchType;
+        });
+
+        const results = document.getElementById('plannerResults');
+        if (filtered.length === 0) {
+            results.innerHTML = '<div class="result-empty">No destinations match your criteria. Try adjusting your filters.</div>';
+            return;
+        }
+
+        results.innerHTML = filtered.map(d => `
+            <div class="card">
+                <img src="${d.image}" alt="${d.name}" class="card-image">
+                <div class="card-body">
+                    <h3 class="card-title">${d.name}</h3>
+                    <p class="card-text">${d.description}</p>
+                    <p class="card-price">$${d.price}/day</p>
+                    <button class="view-btn" onclick="openDestinationModal('${d.id}')">Explore</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function renderPackages() {
+        const grid = document.getElementById('packagesGrid');
+        grid.innerHTML = packages.map((p, i) => `
+            <div class="package-card ${p.featured ? 'featured' : ''}">
+                ${p.featured ? '<div class="package-badge">Popular</div>' : ''}
+                <div class="package-tier">${p.tier}</div>
+                <p class="package-description">${p.description}</p>
+                <div class="package-price">$${currentPriceMode === 'per-person' ? p.pricePerPerson : p.pricePerGroup}</div>
+                <div class="package-features">
+                    ${p.features.map(f => `<div class="feature">${f}</div>`).join('')}
+                </div>
+                <button class="book-btn" onclick="openBookingModal()">Book Now</button>
+            </div>
+        `).join('');
+    }
+
+    function renderHotels() {
+        const grid = document.getElementById('hotelsGrid');
+        grid.innerHTML = hotels.map(h => `
+            <div class="card">
+                <img src="${h.image}" alt="${h.name}" class="card-image">
+                <div class="card-body">
+                    <h3 class="card-title">${h.name}</h3>
+                    <p style="color: var(--text-light); margin-bottom: 0.5rem;">${h.city}</p>
+                    <div class="card-rating">${'★'.repeat(Math.floor(h.rating))}☆ ${h.rating}</div>
+                    <p class="card-price">$${h.price}/night</p>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function renderBlogs() {
+        const grid = document.getElementById('blogGrid');
+        grid.innerHTML = blogs.map((b, i) => `
+            <div class="blog-card" onclick="openArticleModal(${i})">
+                <img src="${b.image}" alt="${b.title}" class="blog-image">
+                <div class="blog-content">
+                    <span class="blog-category">${b.category}</span>
+                    <h3 class="blog-title">${b.title}</h3>
+                    <p class="blog-excerpt">Discover insights and tips about traveling in Sri Lanka...</p>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function renderReviews() {
+        const slider = document.getElementById('reviewsSlider');
+        const review = reviews[currentReviewIndex];
+        slider.innerHTML = `
+            <div class="review-card">
+                <div class="review-stars">${'⭐'.repeat(review.rating)}</div>
+                <p class="review-text">"${review.text}"</p>
+                <p class="review-author">- ${review.author}</p>
+                <p class="review-location">${review.location}</p>
+            </div>
+        `;
+    }
+
+    function renderFAQs() {
+        const container = document.getElementById('faqContainer');
+        container.innerHTML = faqs.map((faq, i) => `
+            <div class="faq-item" data-index="${i}">
+                <div class="faq-question" onclick="toggleFAQ(${i})">
+                    <span>${faq.question}</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p class="faq-answer-text">${faq.answer}</p>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function setupEventListeners() {
+        document.getElementById('destination').addEventListener('change', updatePlannerResults);
+        document.getElementById('budget').addEventListener('input', function() {
+            document.getElementById('budgetDisplay').textContent = '$' + this.value;
+            updatePlannerResults();
+        });
+        document.getElementById('travelType').addEventListener('change', updatePlannerResults);
+        document.querySelectorAll('[data-toggle]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('[data-toggle]').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentPriceMode = this.dataset.toggle.replace('-', '-');
+                renderPackages();
+                showToast('Price mode updated');
+            });
+        });
+
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            const backToTop = document.getElementById('backToTop');
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+                backToTop.classList.add('show');
+            } else {
+                navbar.classList.remove('scrolled');
+                backToTop.classList.remove('show');
+            }
+        });
+    }
+
+    function openDestinationModal(destId) {
+        const dest = destinations.find(d => d.id === destId);
+        document.getElementById('modalTitle').textContent = dest.name;
+        document.getElementById('modalBody').innerHTML = `
+            <div class="modal-section">
+                <h3>Best Time to Visit</h3>
+                <p>${dest.details.bestTime}</p>
+            </div>
+            <div class="modal-section">
+                <h3>Top Activities</h3>
+                <ul class="activities-list">
+                    ${dest.details.activities.map(a => `<li>${a}</li>`).join('')}
+                </ul>
+            </div>
+            <div class="modal-section">
+                <h3>Sample Itinerary</h3>
+                <p>${dest.details.itinerary}</p>
+            </div>
+            <div class="modal-section">
+                <h3>Estimated Budget</h3>
+                <p>${dest.details.budget}</p>
+            </div>
+            <button class="book-btn" onclick="openBookingModal()" style="width: 100%; margin-top: 1rem;">Book This Destination</button>
+        `;
+        document.getElementById('destinationModal').classList.add('active');
+    }
+
+    function openBookingModal() {
+        document.getElementById('bookingModal').classList.add('active');
+    }
+
+    function openArticleModal(index) {
+        const blog = blogs[index];
+        document.getElementById('articleTitle').textContent = blog.title;
+        document.getElementById('articleImage').src = blog.image;
+        document.getElementById('articleContent').innerHTML = `<p>${blog.content}</p>`;
+        document.getElementById('articleModal').classList.add('active');
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.remove('active');
+    }
+
+    function toggleFAQ(index) {
+        const item = document.querySelector(`[data-index="${index}"]`);
+        item.classList.toggle('active');
+    }
+
+    function nextReview() {
+        currentReviewIndex = (currentReviewIndex + 1) % reviews.length;
+        renderReviews();
+    }
+
+    function previousReview() {
+        currentReviewIndex = (currentReviewIndex - 1 + reviews.length) % reviews.length;
+        renderReviews();
+    }
+
+    function submitReview(e) {
+        e.preventDefault();
+        const name = document.getElementById('reviewName').value;
+        const rating = document.getElementById('reviewRating').value;
+        const text = document.getElementById('reviewText').value;
+
+        const newReview = { author: name, rating: parseInt(rating), text, location: 'Sri Lanka Visitor' };
+        reviews.push(newReview);
+        saveReviews();
+        document.getElementById('reviewForm').reset();
+        showToast('Review submitted successfully!', 'success');
+    }
+
+    function submitBooking(e) {
+        e.preventDefault();
+        const name = document.getElementById('bookingName').value;
+        const email = document.getElementById('bookingEmail').value;
+        const dates = document.getElementById('bookingDates').value;
+        showToast(`Booking request received! We'll contact you at ${email}`, 'success');
+        closeModal('bookingModal');
+        document.querySelector('form[onsubmit="submitBooking(event)"]').reset();
+    }
+
+    function submitContact(e) {
+        e.preventDefault();
+        showToast('Message sent! We\'ll reply shortly.', 'success');
+        e.target.reset();
+    }
+
+    function scrollToDestinations() {
+        document.getElementById('destinations').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function scrollToBooking() {
+        document.getElementById('packages').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function backToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showToast(message, type = 'default') {
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+
+    function heroSlider() {
+        const slides = document.querySelectorAll('.hero-slide');
+        let current = 0;
+        setInterval(() => {
+            slides.forEach(s => s.classList.remove('active'));
+            current = (current + 1) % slides.length;
+            slides[current].classList.add('active');
+        }, 5000);
+    }
+
+    function saveReviews() {
+        localStorage.setItem('kalanaTravelsReviews', JSON.stringify(reviews));
+    }
+
+    function loadReviews() {
+        const saved = localStorage.getItem('kalanaTravelsReviews');
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            reviews.length = 0;
+            reviews.push(...parsed);
+        }
+    }
+
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+        localStorage.setItem('kalanatravelsDarkMode', document.body.classList.contains('dark-mode'));
+        document.getElementById('darkToggle').textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+    }
+
+    function loadDarkMode() {
+        if (localStorage.getItem('kalanatravelsDarkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('darkToggle').textContent = '☀️';
+        }
+    }
+
+    document.getElementById('darkToggle').addEventListener('click', toggleDarkMode);
+
+    // Close modals on ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.modal.active').forEach(m => m.classList.remove('active'));
+        }
+    });
+
+    // Close modal when clicking outside
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
